@@ -1,0 +1,12 @@
+.git
+.github
+node_modules
+.env
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+public/css/builds
+public/js/builds
+public/storage
+public/modules

@@ -1,0 +1,226 @@
+/* Round Robin brand layer for FreeScout (inbox.roundrobin.in). Loaded after style.css and recolor.css.
+   Tokens from roundrobin.in global.css: midnight #050b18, frost #f4f7fa, aurora blue #54c7f5, green #5ef2b2,
+   purple #9b7cff (accents only; too light for text on white, so text uses darker derivatives that pass AA).
+   Motion: transform and opacity only, nothing per frame, reduced motion stills everything (AGENTS.md rules 1-3). */
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/rr/brand/fonts/inter-latin-wght.woff2?v=3') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Space Grotesk';
+    src: url('/rr/brand/fonts/space-grotesk-latin-wght.woff2?v=3') format('woff2');
+    font-weight: 300 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---------- Variants ---------- */
+body.rr-midnight {
+    --rr-primary: #050b18;        /* buttons, selected fills */
+    --rr-primary-hover: #1b2740;
+    --rr-link: #0b6d9c;           /* aurora blue, darkened to 5.7:1 on white */
+    --rr-link-hover: #050b18;
+    --rr-tint: #e8f6fd;           /* selected rows, active sidebar item */
+    --rr-focus: #54c7f5;
+    --rr-nav-bg: #050b18;
+    --rr-nav-fg: #f4f7fa;
+    --rr-nav-hover: #121d33;
+    --rr-nav-active: #1b2740;
+}
+body.rr-frost {
+    --rr-primary: #5a3ccf;        /* aurora purple, darkened to 7:1 with white text */
+    --rr-primary-hover: #4c32b8;
+    --rr-link: #5a3ccf;
+    --rr-link-hover: #050b18;
+    --rr-tint: #f1edff;
+    --rr-focus: #9b7cff;
+    --rr-nav-bg: #ffffff;
+    --rr-nav-fg: #050b18;
+    --rr-nav-hover: #f4f7fa;
+    --rr-nav-active: #f1edff;
+}
+
+/* ---------- Type ---------- */
+body.rr-brand,
+body.rr-brand button,
+body.rr-brand input,
+body.rr-brand select,
+body.rr-brand textarea,
+body.rr-brand .btn,
+body.rr-brand .form-control,
+body.rr-brand .tooltip,
+body.rr-brand .popover,
+body.rr-brand .dropdown-menu {
+    font-family: 'Inter', 'Liberation Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+}
+body.rr-brand h1,
+body.rr-brand h2,
+body.rr-brand h3,
+body.rr-brand .sidebar-title,
+body.rr-brand .wizard-header h1 {
+    font-family: 'Space Grotesk', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: -0.01em;
+}
+body.rr-brand a:hover { color: var(--rr-link-hover); }
+
+/* ---------- Navbar ---------- */
+body.rr-brand .navbar-default {
+    position: relative;
+    background-color: var(--rr-nav-bg);
+    border-color: transparent;
+    view-transition-name: rr-nav;   /* stays still while the page below crossfades */
+}
+body.rr-brand .navbar-default::after {   /* the ring's three colours, in ring order */
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;               /* Bootstrap's clearfix makes it a zero-width table otherwise */
+    height: 2px;
+    background: linear-gradient(90deg, #9b7cff 0%, #54c7f5 50%, #5ef2b2 100%);
+    pointer-events: none;
+}
+body.rr-frost .navbar-default { box-shadow: 0 1px 0 #e3e8ee; }
+body.rr-brand .navbar-default .navbar-brand:hover,
+body.rr-brand .navbar-default .navbar-brand.active,
+body.rr-brand .navbar-default .navbar-brand.active:hover { background-color: var(--rr-nav-hover); }
+body.rr-brand .navbar-default .navbar-brand { padding-top: 10px; padding-bottom: 10px; }
+/* FreeScout paints the phone bar's bell white; follow the variant instead. */
+body.rr-brand .navbar-default .dropdown-toggle-icon,
+body.rr-brand .navbar-default .dropdown-toggle-icon .glyphicon { color: var(--rr-nav-fg); }
+@media (min-width: 768px) {
+    body.rr-brand .navbar-default .navbar-nav > li > a,
+    body.rr-brand .navbar-default .navbar-nav > li > a .glyphicon,
+    body.rr-brand .navbar-default .navbar-brand { color: var(--rr-nav-fg); }
+    body.rr-brand .navbar-default .navbar-nav > li > a:hover,
+    body.rr-brand .navbar-default .navbar-nav > li > a:focus {
+        color: var(--rr-nav-fg);
+        background-color: var(--rr-nav-hover);
+    }
+    body.rr-brand .navbar-default .navbar-nav > .active > a,
+    body.rr-brand .navbar-default .navbar-nav > .active > a:hover,
+    body.rr-brand .navbar-default .navbar-nav > .active > a:focus,
+    body.rr-brand .navbar-default .navbar-nav > .open > a,
+    body.rr-brand .navbar-default .navbar-nav > .open > a:hover,
+    body.rr-brand .navbar-default .navbar-nav > .open > a:focus {
+        color: var(--rr-nav-fg);
+        background-color: var(--rr-nav-active);
+    }
+    body.rr-brand .navbar-default .navbar-nav > li > a .caret { border-top-color: currentColor; }
+}
+/* Phone: the bar keeps the variant colour; the toggle and icons follow it. */
+body.rr-brand .navbar-default .navbar-toggle { border-color: transparent; }
+body.rr-brand .navbar-default .navbar-toggle:hover,
+body.rr-brand .navbar-default .navbar-toggle:focus { background-color: var(--rr-nav-hover); }
+body.rr-brand .navbar-default .navbar-toggle .icon-bar { background-color: var(--rr-nav-fg); }
+
+/* ---------- Buttons, inputs, focus ---------- */
+body.rr-brand .btn {
+    border-radius: 8px;
+    transition: transform 120ms ease-out;
+}
+body.rr-brand .btn:active,
+body.rr-brand .btn.active { transform: scale(0.97); }
+body.rr-brand .btn-primary { font-weight: 600; }
+body.rr-brand .form-control:focus {
+    border-color: var(--rr-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--rr-focus) 30%, transparent);
+}
+body.rr-brand a:focus-visible,
+body.rr-brand .btn:focus-visible,
+body.rr-brand [tabindex]:focus-visible {
+    outline: 2px solid var(--rr-focus);
+    outline-offset: 2px;
+}
+body.rr-brand input[type=checkbox],
+body.rr-brand input[type=radio] { accent-color: var(--rr-primary); }
+body.rr-brand ::selection { background: color-mix(in srgb, #54c7f5 30%, transparent); }
+
+/* ---------- Menus and dialogs ---------- */
+body.rr-brand .dropdown-menu {
+    border-color: #e3e8ee;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(5, 11, 24, 0.12);
+    transform-origin: top left;
+}
+body.rr-brand .dropdown-menu-right,
+body.rr-brand .pull-right > .dropdown-menu,
+body.rr-brand .navbar-right .dropdown-menu { transform-origin: top right; }
+body.rr-brand .open > .dropdown-menu { animation: rr-menu-in 140ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+body.rr-brand .open > .dropdown-menu.rr-closing { animation: rr-menu-out 110ms ease-in forwards; }
+@keyframes rr-menu-in {
+    from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+@keyframes rr-menu-out {
+    from { opacity: 1; transform: none; }
+    to { opacity: 0; transform: translateY(-4px) scale(0.98); }
+}
+body.rr-brand .modal-content {
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(5, 11, 24, 0.22);
+}
+body.rr-brand .modal.fade .modal-dialog {
+    transform: translateY(12px) scale(0.98);
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+body.rr-brand .modal.in .modal-dialog { transform: none; }
+
+/* ---------- Sign-in page ---------- */
+body.rr-brand.user-is-guest { background-color: #f4f7fa; }
+body.rr-brand .banner { margin: 56px 0 28px; }
+body.rr-brand .banner img { height: 52px; width: auto; }
+body.rr-brand.user-is-guest .panel-shaded {
+    position: relative;
+    overflow: hidden;
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(5, 11, 24, 0.06), 0 12px 32px rgba(5, 11, 24, 0.08);
+}
+body.rr-brand.user-is-guest .panel-shaded::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, #9b7cff 0%, #54c7f5 50%, #5ef2b2 100%);
+}
+body.rr-brand.user-is-guest .panel-shaded .panel-body { padding-top: 22px; }
+body.rr-brand .footer { color: #6b7686; }
+body.rr-brand .footer a { color: inherit; }
+
+/* ---------- Page transitions ---------- */
+@view-transition { navigation: auto; }
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 160ms;
+    animation-timing-function: ease-out;
+}
+::view-transition-group(rr-nav),
+::view-transition-old(rr-nav),
+::view-transition-new(rr-nav) { animation: none; }
+/* Browsers without cross-page transitions get a short fade-in of the content instead. */
+@supports not (view-transition-name: none) {
+    body.rr-brand #app > .content,
+    body.rr-brand #app > .content-2col { animation: rr-enter 180ms ease-out; }
+}
+@keyframes rr-enter {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    @view-transition { navigation: none; }
+    body.rr-brand *,
+    body.rr-brand *::before,
+    body.rr-brand *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

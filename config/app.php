@@ -658,6 +658,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\PolycastServiceProvider::class,
+        // Round Robin fork (app/RoundRobin, see ROUNDROBIN.md): Purelymail accounts and the Round Robin look.
+        App\RoundRobin\Purelymail\PurelymailServiceProvider::class,
+        App\RoundRobin\Brand\BrandServiceProvider::class,
 
         /*
          * Custom Service Providers...
