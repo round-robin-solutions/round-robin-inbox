@@ -161,7 +161,9 @@ return [
     'cache' => [
         // Modules 'active' flag is stored in DB in modules, so we have to cache modules info
         'enabled' => true,
-        'key'     => 'laravel-modules',
+        // Round Robin: one cache entry per image version (.rr-version, written by the Containerfile). Blue and green
+        // share storage during a rollout, so a shared key let one colour load modules only the other one has.
+        'key'     => 'laravel-modules'.(is_readable(__DIR__.'/../.rr-version') ? '-rr-'.md5((string) file_get_contents(__DIR__.'/../.rr-version')) : ''),
         // Minues
         'lifetime' => 60,
     ],
