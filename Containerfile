@@ -15,6 +15,7 @@ RUN set -e; \
     mv install.rr install; \
     cd install; \
     sed -i "s/env('APP_LOG', 'daily')/env('APP_LOG', 'single')/" config/app.php; \
+    mkdir -p vendor/natxet/cssmin/src vendor/rap2hpoutre/laravel-log-viewer/src/controllers; \
     composer install --ignore-platform-reqs --no-interaction --no-progress; \
     php artisan freescout:build; \
     rm -rf .editorconfig .env.travis .git* .htaccess .travis.yml tests Containerfile .dockerignore; \
