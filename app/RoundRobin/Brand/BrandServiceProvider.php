@@ -61,6 +61,24 @@ class BrandServiceProvider extends ServiceProvider
         \Eventy::addAction('body.class', function () {
             echo ' rr-brand rr-'.self::variant();
         });
+        // New mailboxes start with the Round Robin email signature instead of FreeScout's "--" default.
+        \App\Mailbox::creating(function (\App\Mailbox $mailbox) {
+            $sig = trim((string) $mailbox->signature);
+            if ($sig === '' || $sig === trim(\App\Mailbox::DEFAULT_SIGNATURE)) {
+                $mailbox->signature = self::emailSignature();
+            }
+        });
+    }
+
+    /**
+     * Default email signature (Resources/email-signature.html, 2026-11-04). Tables and inline styles only, so FreeScout's
+     * signature cleaner keeps it. Images come from cdn.roundrobin.in (R2 bucket roundrobin-cdn, cached by Cloudflare);
+     * give a changed image a new -vN file name. The name and company inherit the client's text colour and the grey and
+     * blue are mid-tones, so it reads in light and dark mode.
+     */
+    public static function emailSignature()
+    {
+        return trim(file_get_contents(__DIR__.'/Resources/email-signature.html'));
     }
 
     /** Configured look, or the one previewed this session with ?rr_theme=... */
