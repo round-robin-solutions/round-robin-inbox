@@ -27,15 +27,3 @@
         <p class="help-block">{{ __('Where "Forgot password" and new passwords are sent.') }}</p>
     </div>
 </div>
-<script>
-    (function () {
-        // Run now or later: Cloudflare Rocket Loader can run this after DOMContentLoaded already fired.
-        function relabel() {
-            var l = document.querySelector('label[for="email"]');
-            if (l) { l.textContent = @json(__('Sign-in email')); }
-        }
-        relabel();
-        document.addEventListener('DOMContentLoaded', relabel);
-        window.addEventListener('load', relabel);
-    })();
-</script>
