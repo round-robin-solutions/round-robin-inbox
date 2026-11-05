@@ -17,6 +17,33 @@ class PurelymailServiceProvider extends ServiceProvider
         // One password: the dashboard password is the Purelymail email password (sign-in, change, reset).
         $this->app['router']->pushMiddlewareToGroup('web', \App\RoundRobin\Purelymail\Http\Middleware\EmailPassword::class);
 
+        // Profile: Round Robin email + personal email fields (checked before save, stored after FreeScout's own save).
+        $this->app['router']->pushMiddlewareToGroup('web', \App\RoundRobin\Purelymail\Http\Middleware\ProfileEmails::class);
+        \Eventy::addAction('user.edit.before_email', function ($user) {
+            echo view('purelymail::profile_emails', ['user' => $user])->render();
+        });
+        \Eventy::addFilter('user.save_profile', function ($user, $request) {
+            $me = auth()->user();
+            if (!$me || !$request->has('personal_email')) {
+                return $user;
+            }
+            $A = \App\RoundRobin\Purelymail\Services\Addresses::class;
+            try {
+                if ($me->isAdmin() && $request->has('rr_email') && !$A::workIsSignIn($user)) {
+                    $A::setWork($user, trim((string) $request->input('rr_email')));
+                }
+                $personal = strtolower(trim((string) $request->input('personal_email')));
+                if ($personal !== (string) $A::personal($user)) {
+                    app(\App\RoundRobin\Purelymail\Services\Recovery::class)->set($user, $personal ?: null);
+                }
+            } catch (\Exception $e) {
+                \Helper::logException($e, '[Purelymail] profile emails '.$user->email);
+                \Session::flash('flash_error', __('The profile was saved, but the emails were not: :error', ['error' => $e->getMessage()]));
+            }
+
+            return $user;
+        }, 20, 2);
+
         // Manage menu: link under "Mailboxes", admins only.
         \Eventy::addAction('menu.manage.after_mailboxes', function () {
             if (auth()->user() && auth()->user()->isAdmin()) {
