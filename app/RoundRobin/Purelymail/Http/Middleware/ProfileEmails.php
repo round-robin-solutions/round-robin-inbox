@@ -17,6 +17,17 @@ class ProfileEmails
     public function handle($request, Closure $next)
     {
         $route = $request->route();
+        if ($request->isMethod('get') && $route && $route->getName() === 'users.profile') {
+            // Label FreeScout's own Email row "Sign-in email" (no hook for it; done on the rendered page).
+            $response = $next($request);
+            $html = method_exists($response, 'getContent') ? $response->getContent() : null;
+            if (is_string($html)) {
+                $label = '<label for="email" class="col-sm-2 control-label">'.__('Email').'</label>';
+                $response->setContent(str_replace($label, '<label for="email" class="col-sm-2 control-label">'.e(__('Sign-in email')).'</label>', $html));
+            }
+
+            return $response;
+        }
         if (!$request->isMethod('post') || !$route || $route->getName() !== 'users.profile.save') {
             return $next($request);
         }
