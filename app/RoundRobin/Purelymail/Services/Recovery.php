@@ -34,7 +34,7 @@ class Recovery
     {
         $email = $email ? strtolower(trim($email)) : null;
         $old = self::get($user);
-        $address = strtolower((string) Addresses::work($user)); // the Round Robin address, not the sign-in email
+        $address = strtolower($user->email);
         if (app(EmailPassword::class)->backed($address) === true) {
             // Replace, not edit: upsert with existingTarget answers "Reset method not found" (2026-11-03).
             if ($old && $old !== $email && $this->hasMethod($address, $old)) {

@@ -2,54 +2,24 @@
 
 namespace App\RoundRobin\Purelymail\Services;
 
-use App\Option;
 use App\User;
 
 /**
- * The two addresses shown on Profile (Rahul, 2026-11-06: "Show both emails here").
- * - Round Robin email: the FreeScout email when it is on our domains, else the stored purelymail.address.<id>.
- * - Personal email: the Recovery value; while none is stored and the FreeScout email is not ours, that email.
+ * Sign-in is always the Round Robin address (Rahul, 2026-11-06): user.email must be on one of
+ * config('purelymail.domains'). The personal email is only where the one-time setup mail goes
+ * (Recovery, option purelymail.recovery.<id>); it is never a sign-in or a second identity.
  */
 class Addresses
 {
-    public static function work(User $user)
-    {
-        if (EmailPassword::onOurDomain($user->email)) {
-            return strtolower($user->email);
-        }
-        $stored = Option::get('purelymail.address.'.$user->id, '', false, false);
-
-        return $stored ? strtolower($stored) : null;
-    }
-
-    /** Whether the Round Robin email is just the sign-in email (edited there, not here). */
-    public static function workIsSignIn(User $user)
-    {
-        return EmailPassword::onOurDomain($user->email);
-    }
-
     public static function personal(User $user)
     {
-        if ($recovery = Recovery::get($user)) {
-            return $recovery;
-        }
-
-        return $user->email && !EmailPassword::onOurDomain($user->email) ? strtolower($user->email) : null;
+        return Recovery::get($user);
     }
 
-    public static function setWork(User $user, $email)
+    public static function signInProblem($email)
     {
-        if ($email) {
-            Option::set('purelymail.address.'.$user->id, strtolower(trim($email)));
-        } else {
-            Option::remove('purelymail.address.'.$user->id);
-        }
-    }
-
-    public static function workProblem($email)
-    {
-        if ($email && !EmailPassword::onOurDomain($email)) {
-            return __('Use an address on :domains.', ['domains' => implode(', ', config('purelymail.domains'))]);
+        if (!EmailPassword::onOurDomain($email)) {
+            return __('The sign-in email must be a Round Robin address (:domains). The personal email goes in the field below, for the one-time setup mail.', ['domains' => implode(', ', config('purelymail.domains'))]);
         }
 
         return null;

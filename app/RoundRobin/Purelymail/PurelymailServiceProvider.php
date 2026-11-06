@@ -27,13 +27,9 @@ class PurelymailServiceProvider extends ServiceProvider
             if (!$me || !$request->has('personal_email')) {
                 return $user;
             }
-            $A = \App\RoundRobin\Purelymail\Services\Addresses::class;
             try {
-                if ($me->isAdmin() && $request->has('rr_email') && !$A::workIsSignIn($user)) {
-                    $A::setWork($user, trim((string) $request->input('rr_email')));
-                }
                 $personal = strtolower(trim((string) $request->input('personal_email')));
-                if ($personal !== (string) $A::personal($user)) {
+                if ($personal !== (string) \App\RoundRobin\Purelymail\Services\Addresses::personal($user)) {
                     app(\App\RoundRobin\Purelymail\Services\Recovery::class)->set($user, $personal ?: null);
                 }
             } catch (\Exception $e) {
