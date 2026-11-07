@@ -1,3 +1,5 @@
+> **Round Robin Inbox** is [Round Robin Solutions](https://roundrobin.in)' fork of FreeScout, with Purelymail mailbox management. It runs [inbox.roundrobin.in](https://inbox.roundrobin.in), our team's shared inbox, and our changes live in `app/RoundRobin`. FreeScout is made by the FreeScout team ([freescout-help-desk/freescout](https://github.com/freescout-help-desk/freescout)) under the AGPL-3.0 licence; the text below is its README.
+
 # Free Self-Hosted Zendesk & Help Scout Alternative
 
 <div align="center">
