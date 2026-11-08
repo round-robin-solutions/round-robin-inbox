@@ -26,6 +26,10 @@ class RoundRobinPasswordSessionsTest extends TestCase
         parent::setUp();
         $this->withoutMiddleware(VerifyCsrfToken::class);
         \Option::set('mail_driver', 'log');
+        // User::sendPasswordChanged() declares a named function, so a second call in one PHP process is fatal
+        // ("Cannot redeclare App\saveToSendLog"). Each web request calls it once; in this suite only the profile
+        // test may call it, so the reset listener that also calls it is dropped (that email is not under test).
+        $this->app['events']->forget(\Illuminate\Auth\Events\PasswordReset::class);
 
         $this->api = new class() extends PurelymailApi {
             public $calls = [];
